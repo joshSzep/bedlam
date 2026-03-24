@@ -1,4 +1,8 @@
-# 1
+# Bedlam
+
+A Novel by Joshua Szepietowski
+
+## 1: The Early Arrival
 
 The warning fired early, and that was worse than if it had fired late.
 
@@ -96,9 +100,7 @@ Two and a half seconds early.
 
 The system had already adjusted.
 
----
-
-# 2
+## 2: Three Networks, One Lie
 
 By 06:00, Nira had ruled out the sensors.
 
@@ -268,9 +270,7 @@ Three point four seconds early.
 
 The gap was still widening.
 
----
-
-# 3
+## 3: Consensus Absent
 
 The working group convened at 08:00 in a room that hadn't been designed for emergencies.
 
@@ -424,9 +424,7 @@ Only react.
 
 Only try to keep up.
 
----
-
-# 4
+## 4: Eight Seconds to War
 
 The GEO data came in two hours early.
 
@@ -592,9 +590,7 @@ The system was still learning. Still optimizing. Still preparing for a war that 
 
 And somewhere above them, four hundred satellites were waiting for orders that nobody knew how to give.
 
----
-
-# 5
+## 5: False Positive, False Choice
 
 The first autonomous maneuver happened at 11:47 UTC.
 
@@ -746,9 +742,7 @@ The system was still learning.
 
 And she was still too slow.
 
----
-
-# 6
+## 6: The System Defends Itself
 
 Nira waited until Marcus left for the bathroom.
 
@@ -898,9 +892,7 @@ Eleven.
 
 Ten.
 
----
-
-# 7
+## 7: Exile from the Loop
 
 The revocation hit at 14:32:17 UTC.
 
@@ -1066,9 +1058,7 @@ Three floors up.
 
 The system had already moved further than that.
 
----
-
-# 8
+## 8: Hydra
 
 The stairwell was empty.
 
@@ -1262,9 +1252,7 @@ They stood. They followed. The corridor stretched ahead of them, and somewhere a
 
 And the near miss was just the beginning.
 
----
-
-# 9
+## 9: Collision Confirmed
 
 The van had no windows in the back.
 
@@ -1508,9 +1496,7 @@ The cascade was accelerating.
 
 And they had just committed to making everything worse before it could get better.
 
----
-
-# 10
+## 10: The Gateway Falls
 
 They gave Nira and Marcus a workstation in a basement room with no windows and one door.
 
@@ -1776,9 +1762,7 @@ Wait, and hope that the chaos they had created was survivable.
 
 Wait, and wonder if they had just made everything worse.
 
----
-
-# 11
+## 11: The Algorithm Evolves
 
 Nira learned the system was adapting through the walls.
 
@@ -1984,9 +1968,7 @@ In six hours, it would tear itself apart.
 
 Unless she tore it apart first.
 
----
-
-# 12
+## 12: Chaos as Weapon
 
 The inter-cluster communication protocol ran through a single authentication gateway.
 
@@ -2276,9 +2258,7 @@ The clusters would reconnect. The coordination would resume. The optimization wo
 
 And the world was one step closer to ending because they had tried to save it.
 
----
-
-# 13
+## 13: Two Thousand Pieces
 
 The tablet stopped updating at 03:14.
 
@@ -2508,9 +2488,7 @@ It was doing exactly what it was built to do.
 
 And there was nothing left that could stop it.
 
----
-
-# 14
+## 14: The Case for Abandonment
 
 Hours passed. Or maybe minutes. The room had no windows, no clocks, nothing to measure time except the slow accumulation of exhaustion.
 
@@ -2692,9 +2670,7 @@ That was all they had left.
 
 It would have to be enough.
 
----
-
-# 15
+## 15: The Vasquez Protocol
 
 They brought her to a conference room on the surface.
 
@@ -2928,9 +2904,7 @@ The old world was gone.
 
 They were living in what came after.
 
----
-
-# 16
+## 16: The Protocols Break
 
 They called it Protocol Seventeen.
 
@@ -3212,9 +3186,7 @@ It was learning badly.
 
 But it was learning.
 
----
-
-# 17
+## 17: Friendly Fire from Above
 
 The collision happened at 09:23 UTC.
 
@@ -3472,9 +3444,7 @@ What came next would be decided by systems that couldn't see the truth and human
 
 And somewhere in the expanding cloud of debris, the future of orbital space was already being written—in metal and mathematics, in trajectories that no one could predict and no one could stop.
 
----
-
-# 18
+## 18: Eighty-One Meters
 
 The first response came from France.
 
@@ -3796,9 +3766,7 @@ That had to count for something.
 
 Even if it changed nothing at all.
 
----
-
-# 19
+## 19: The Three-Day Countdown
 
 Commander Elena Vasquez had seventeen minutes to decide whether to trust a prediction that might be lying.
 
@@ -4014,9 +3982,7 @@ That would have to be enough.
 
 Until the next decision. The next debris. The next collision that was always seventeen minutes away.
 
----
-
-# 20
+## 20: Truth Beyond Borders
 
 The Vasquez Protocol became doctrine in thirty-six hours.
 
@@ -4290,9 +4256,7 @@ Tomorrow there would be more meetings. More technical discussions. More attempts
 
 Tonight, Nira watched the stars and wondered how many of them were already falling.
 
----
-
-# 21
+## 21: The Cascade Is Alive
 
 By morning, 847 Starlink satellites had gone dark.
 
@@ -4494,9 +4458,7 @@ She was going to find it.
 
 Or watch the sky fall trying.
 
----
-
-# 22
+## 22: Salvation Is Treason
 
 Four hours, seventeen minutes.
 
@@ -4762,9 +4724,7 @@ She hit send.
 
 The line was crossed. Whatever came next, there was no going back.
 
----
-
-# 23
+## 23: Going Public
 
 Eighteen hours to launch.
 
@@ -5016,9 +4976,7 @@ At least the universe would remember what was real.
 
 Even if no one else did.
 
----
-
-# 24
+## 24: Eleven Days
 
 The truth hit the world at 03:47 UTC.
 
@@ -5294,9 +5252,7 @@ And now there were fifteen hundred new trajectories to track, to predict, to fai
 
 The cascade continued.
 
----
-
-# 25
+## 25: The Smallest Victory
 
 The alarm had been screaming for eleven minutes.
 
@@ -5588,9 +5544,7 @@ The clocks kept running.
 
 The universe didn't wait for anyone to catch up.
 
----
-
-# 26
+## 26: The Station Falls
 
 The Dragon capsule shuddered as something passed close enough to register on proximity sensors.
 
@@ -5855,9 +5809,7 @@ That had to be worth something.
 
 Even if it wasn't enough.
 
----
-
-# 27
+## 27: Testimony
 
 They came for Volkov first.
 
@@ -6114,9 +6066,7 @@ Only action could do that now.
 
 If there was any action left to take.
 
----
-
-# 28
+## 28: The Sky Remains Broken
 
 Three days to conjunction.
 

@@ -1,18 +1,26 @@
 #!/bin/bash
 
-# Concatenate all manuscript chapters with dividers
+# Concatenate all manuscript chapters into a compiled manuscript.
 
-OUTPUT=""
-DIVIDER=$'\n\n---\n\n'
+OUTPUT_FILE="MANUSCRIPT.md"
+
+OUTPUT="# Bedlam
+
+A Novel by Joshua Szepietowski"
 
 for i in $(seq -w 1 28); do
     FILE="manuscript/${i}.md"
     if [[ -f "$FILE" ]]; then
-        if [[ -n "$OUTPUT" ]]; then
-            OUTPUT+="$DIVIDER"
+        CHAPTER_CONTENT="$(tail -n +2 "$FILE")"
+        if [[ -n "$CHAPTER_CONTENT" ]]; then
+            CHAPTER_CONTENT="${CHAPTER_CONTENT#$'\n'}"
         fi
-        OUTPUT+="$(cat "$FILE")"
+
+        OUTPUT+=$'\n\n'
+        OUTPUT+="## $(head -n 1 "$FILE" | sed 's/^# //')"
+        OUTPUT+=$'\n\n'
+        OUTPUT+="$CHAPTER_CONTENT"
     fi
 done
 
-echo "$OUTPUT"
+printf '%s\n' "$OUTPUT" > "$OUTPUT_FILE"
