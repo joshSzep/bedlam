@@ -1,0 +1,1371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bedlam by Joshua Szepietowski</title>
+  <meta name="description" content="A launch page for Bedlam, a hard science fiction novel about automated systems outrunning human understanding.">
+  <style>
+    :root {
+      --space: #0b0f14;
+      --teal: #0f2a2e;
+      --teal-bright: #1b4549;
+      --orange: #ff5a1f;
+      --orange-hot: #ff7a2f;
+      --ember: #ffbd70;
+      --ink: #f1e7d2;
+      --muted: rgba(241, 231, 210, 0.72);
+      --line: rgba(241, 231, 210, 0.12);
+      --panel: rgba(7, 11, 16, 0.78);
+      --panel-strong: rgba(8, 13, 18, 0.92);
+      --shadow: 0 28px 80px rgba(0, 0, 0, 0.58);
+      --glow: 0 0 40px rgba(255, 122, 47, 0.38);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 50% 110%, rgba(255, 122, 47, 0.24), transparent 26%),
+        radial-gradient(circle at 18% 22%, rgba(27, 69, 73, 0.34), transparent 30%),
+        radial-gradient(circle at 86% 18%, rgba(255, 90, 31, 0.16), transparent 22%),
+        linear-gradient(180deg, #04070b 0%, var(--space) 32%, #071118 62%, #04070b 100%);
+      font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+      overflow-x: hidden;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    body::before {
+      background:
+        radial-gradient(circle at 50% 92%, rgba(255, 122, 47, 0.18), transparent 18%),
+        radial-gradient(circle at 64% 48%, rgba(255, 90, 31, 0.1), transparent 14%),
+        radial-gradient(circle at 30% 26%, rgba(27, 69, 73, 0.18), transparent 18%);
+      filter: blur(26px);
+      opacity: 0.9;
+    }
+
+    body::after {
+      background:
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 100% 3px, 3px 100%;
+      opacity: 0.04;
+      mix-blend-mode: screen;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    canvas,
+    .noise,
+    .impact-layer,
+    .haze {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    #starfield {
+      z-index: 0;
+    }
+
+    .noise {
+      z-index: 2;
+      opacity: 0.16;
+      mix-blend-mode: soft-light;
+      background-image:
+        radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.34) 0 0.8px, transparent 1px),
+        radial-gradient(circle at 75% 40%, rgba(255, 255, 255, 0.24) 0 0.6px, transparent 1px),
+        radial-gradient(circle at 50% 75%, rgba(255, 255, 255, 0.24) 0 0.7px, transparent 1px),
+        repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.04) 0 1px, transparent 1px 4px);
+      background-size: 180px 180px, 240px 240px, 210px 210px, 100% 100%;
+      animation: noise-shift 0.28s steps(2, end) infinite;
+    }
+
+    .haze {
+      z-index: 1;
+      background:
+        radial-gradient(circle at 50% 90%, rgba(255, 122, 47, 0.14), transparent 23%),
+        conic-gradient(from 240deg at 50% 92%, transparent, rgba(255, 90, 31, 0.1), transparent 30%);
+      filter: blur(24px);
+      opacity: 0.95;
+    }
+
+    .impact-layer {
+      z-index: 3;
+      overflow: hidden;
+    }
+
+    .impact-burst {
+      position: absolute;
+      width: var(--burst-size);
+      height: var(--burst-size);
+      left: calc(var(--burst-left) * 1%);
+      top: calc(var(--burst-top) * 1%);
+      border-radius: 50%;
+      background:
+        radial-gradient(circle, rgba(255, 214, 135, 0.95) 0 12%, rgba(255, 122, 47, 0.72) 18%, rgba(255, 90, 31, 0.36) 38%, rgba(255, 90, 31, 0) 72%);
+      transform: translate(-50%, -50%) scale(0.12) rotate(calc(var(--burst-tilt) * 1deg));
+      filter: blur(6px);
+      opacity: 0;
+      mix-blend-mode: screen;
+      animation: burst-flare var(--burst-duration) cubic-bezier(0.19, 1, 0.22, 1) forwards;
+    }
+
+    .impact-burst::before,
+    .impact-burst::after {
+      content: "";
+      position: absolute;
+      inset: 50% auto auto 50%;
+      transform-origin: 0 0;
+      background: linear-gradient(90deg, rgba(255, 198, 112, 0.9), rgba(255, 90, 31, 0));
+      height: 2px;
+      width: 140%;
+      opacity: 0.8;
+    }
+
+    .impact-burst::before {
+      transform: rotate(18deg) translate(-10%, -50%);
+    }
+
+    .impact-burst::after {
+      transform: rotate(-32deg) translate(-10%, -50%);
+      width: 120%;
+    }
+
+    main {
+      position: relative;
+      z-index: 5;
+    }
+
+    .section {
+      position: relative;
+      padding: clamp(4.5rem, 7vw, 8rem) clamp(1.2rem, 3vw, 3rem);
+    }
+
+    .hero {
+      min-height: 100svh;
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+      gap: clamp(2rem, 4vw, 4.8rem);
+      align-items: center;
+      padding-top: clamp(4.5rem, 8vw, 7rem);
+      padding-bottom: clamp(3.5rem, 8vw, 6rem);
+      overflow: clip;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: auto -8% -18% 12%;
+      height: 46vh;
+      background:
+        radial-gradient(circle, rgba(255, 122, 47, 0.3) 0 18%, rgba(255, 90, 31, 0.14) 28%, rgba(255, 90, 31, 0) 72%);
+      filter: blur(14px);
+      opacity: 0.9;
+      transform: translate3d(0, 0, 0);
+    }
+
+    .hero-copy,
+    .hero-stage,
+    .chapter-layout,
+    .download-card,
+    .footer-inner {
+      position: relative;
+      z-index: 2;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7rem;
+      margin-bottom: 1.25rem;
+      font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+      font-size: 0.88rem;
+      letter-spacing: 0.34em;
+      text-transform: uppercase;
+      color: rgba(241, 231, 210, 0.84);
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 3.2rem;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(255, 122, 47, 0), rgba(255, 122, 47, 0.88));
+      box-shadow: 0 0 18px rgba(255, 122, 47, 0.3);
+    }
+
+    .title-lockup {
+      position: relative;
+      margin: 0;
+      max-width: 9ch;
+    }
+
+    .title {
+      position: relative;
+      display: inline-block;
+      margin: 0;
+      font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+      font-size: clamp(4.8rem, 16vw, 12rem);
+      line-height: 0.82;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #f0dfbd;
+      text-shadow: 0 0 28px rgba(255, 231, 187, 0.08), 0 0 60px rgba(255, 90, 31, 0.12);
+      animation: title-shudder 8s steps(2, end) infinite;
+      will-change: transform;
+    }
+
+    .title::before,
+    .title::after {
+      content: attr(data-text);
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.42;
+      mix-blend-mode: screen;
+    }
+
+    .title::before {
+      color: rgba(255, 90, 31, 0.72);
+      transform: translate3d(0.04em, 0, 0);
+      clip-path: polygon(0 0, 100% 0, 100% 46%, 0 52%);
+      animation: title-glitch-a 2.8s steps(2, end) infinite;
+    }
+
+    .title::after {
+      color: rgba(148, 229, 236, 0.44);
+      transform: translate3d(-0.03em, 0, 0);
+      clip-path: polygon(0 54%, 100% 48%, 100% 100%, 0 100%);
+      animation: title-glitch-b 3.2s steps(2, end) infinite;
+    }
+
+    .author-line {
+      margin: 1.1rem 0 0;
+      font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+      font-size: clamp(1.05rem, 2.1vw, 1.5rem);
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(241, 231, 210, 0.84);
+    }
+
+    .lede {
+      max-width: 32rem;
+      margin: 1.8rem 0 0;
+      font-size: clamp(1.05rem, 1.3vw + 0.82rem, 1.28rem);
+      line-height: 1.42;
+      color: var(--muted);
+    }
+
+    .signal-line {
+      display: grid;
+      gap: 0.45rem;
+      margin: 1.8rem 0 0;
+      max-width: 32rem;
+      padding: 1rem 1.15rem;
+      background: linear-gradient(135deg, rgba(255, 122, 47, 0.08), rgba(7, 11, 16, 0.16));
+      border: 1px solid rgba(255, 122, 47, 0.18);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02), var(--shadow);
+      backdrop-filter: blur(8px);
+    }
+
+    .signal-label {
+      font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+      font-size: 0.78rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: rgba(255, 189, 112, 0.92);
+    }
+
+    .signal-copy {
+      font-size: 0.96rem;
+      line-height: 1.4;
+      color: rgba(241, 231, 210, 0.76);
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.95rem;
+      margin-top: 2rem;
+    }
+
+    .button,
+    .text-link {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.7rem;
+      min-height: 3.4rem;
+      padding: 0.9rem 1.3rem;
+      border: 1px solid rgba(255, 122, 47, 0.34);
+      font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+      font-size: 0.94rem;
+      letter-spacing: 0.17em;
+      text-transform: uppercase;
+      transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
+      will-change: transform;
+    }
+
+    .button::before,
+    .text-link::before {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      background: linear-gradient(110deg, transparent 0%, rgba(255, 255, 255, 0.08) 42%, transparent 58%);
+      transform: translateX(-110%);
+      transition: transform 320ms ease;
+      z-index: -1;
+    }
+
+    .button::after,
+    .text-link::after {
+      content: attr(data-glitch);
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: rgba(148, 229, 236, 0.42);
+      opacity: 0;
+      transform: translate3d(-2px, 0, 0);
+      pointer-events: none;
+      mix-blend-mode: screen;
+    }
+
+    .button:hover::before,
+    .button:focus-visible::before,
+    .text-link:hover::before,
+    .text-link:focus-visible::before {
+      transform: translateX(0);
+    }
+
+    .button:hover::after,
+    .button:focus-visible::after,
+    .text-link:hover::after,
+    .text-link:focus-visible::after {
+      opacity: 1;
+      animation: hover-glitch 240ms steps(2, end) 2;
+    }
+
+    .button:hover,
+    .button:focus-visible,
+    .text-link:hover,
+    .text-link:focus-visible {
+      transform: translate3d(0, -3px, 0);
+      border-color: rgba(255, 189, 112, 0.6);
+      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.34), var(--glow);
+      outline: none;
+    }
+
+    .button-primary {
+      color: #1a0d05;
+      background: linear-gradient(135deg, var(--orange-hot), #ffba62 118%);
+      box-shadow: 0 18px 34px rgba(255, 90, 31, 0.24);
+    }
+
+    .button-secondary {
+      color: var(--ink);
+      background: linear-gradient(135deg, rgba(15, 42, 46, 0.76), rgba(7, 11, 16, 0.92));
+      border-color: rgba(148, 229, 236, 0.22);
+    }
+
+    .hero-stage {
+      display: grid;
+      place-items: center;
+      min-height: 72vh;
+    }
+
+    .cover-rig {
+      position: relative;
+      width: min(84vw, 33rem);
+      max-width: 100%;
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+
+    .cover-rig::before {
+      content: "";
+      position: absolute;
+      inset: 22% -16% -10% -12%;
+      background:
+        radial-gradient(circle at 52% 58%, rgba(255, 214, 135, 0.64) 0 9%, rgba(255, 122, 47, 0.52) 14%, rgba(255, 90, 31, 0.22) 28%, rgba(255, 90, 31, 0) 58%);
+      filter: blur(18px);
+      transform: translateZ(-1px) rotate(-7deg);
+      z-index: 0;
+      animation: pulse-flare 6s ease-in-out infinite;
+    }
+
+    .cover-rig::after {
+      content: "";
+      position: absolute;
+      inset: -6% 4% 8%;
+      border: 1px solid rgba(148, 229, 236, 0.12);
+      transform: rotate(-5deg);
+      opacity: 0.8;
+    }
+
+    .cover-frame {
+      position: relative;
+      padding: 1rem;
+      background: linear-gradient(145deg, rgba(8, 13, 18, 0.76), rgba(8, 13, 18, 0.28));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 34px 80px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+      transform: rotate(-6deg);
+      backdrop-filter: blur(8px);
+      animation: cover-heave 9s ease-in-out infinite;
+      z-index: 2;
+    }
+
+    .cover-art {
+      position: relative;
+      border: 1px solid rgba(241, 231, 210, 0.18);
+      box-shadow: var(--shadow);
+    }
+
+    .cover-orbit,
+    .cover-signal,
+    .cover-impact {
+      position: absolute;
+      pointer-events: none;
+    }
+
+    .cover-orbit {
+      inset: 9% -12% auto auto;
+      width: 62%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      border: 1px solid rgba(148, 229, 236, 0.18);
+      transform: rotate(12deg);
+      opacity: 0.7;
+      animation: orbit-twitch 9.5s linear infinite;
+    }
+
+    .cover-orbit::before,
+    .cover-orbit::after {
+      content: "";
+      position: absolute;
+      inset: 14%;
+      border-radius: 50%;
+      border: 1px dashed rgba(255, 122, 47, 0.18);
+    }
+
+    .cover-orbit::after {
+      inset: -9%;
+      border-style: solid;
+      border-color: rgba(255, 122, 47, 0.08);
+    }
+
+    .cover-impact {
+      inset: auto -14% -10% 6%;
+      width: 72%;
+      height: 20%;
+      background:
+        radial-gradient(circle at 32% 50%, rgba(255, 214, 135, 0.9) 0 7%, rgba(255, 122, 47, 0.86) 16%, rgba(255, 90, 31, 0.22) 36%, rgba(255, 90, 31, 0) 72%);
+      filter: blur(4px);
+      transform: rotate(-12deg);
+      opacity: 0.9;
+      mix-blend-mode: screen;
+      animation: burst-breathe 4.8s ease-in-out infinite;
+    }
+
+    .cover-signal {
+      left: -8%;
+      bottom: 8%;
+      width: min(16rem, 48vw);
+      padding: 0.9rem 1rem;
+      background: linear-gradient(135deg, rgba(7, 11, 16, 0.88), rgba(15, 42, 46, 0.38));
+      border: 1px solid rgba(255, 122, 47, 0.24);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.42);
+      backdrop-filter: blur(10px);
+      transform: rotate(2deg);
+      z-index: 3;
+    }
+
+    .signal-grid {
+      display: grid;
+      gap: 0.28rem;
+      font-size: 0.74rem;
+      line-height: 1.35;
+      color: rgba(241, 231, 210, 0.7);
+    }
+
+    .signal-grid strong {
+      font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255, 189, 112, 0.92);
+    }
+
+    .metrics {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+      margin-top: 1.7rem;
+    }
+
+    .metric {
+      min-width: 9rem;
+      padding: 0.8rem 0.9rem;
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      background: linear-gradient(135deg, rgba(255, 122, 47, 0.1), rgba(7, 11, 16, 0.34));
+      backdrop-filter: blur(8px);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+    }
+
+    .metric-label {
+      display: block;
+      font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(241, 231, 210, 0.56);
+    }
+
+    .metric-value {
+      display: block;
+      margin-top: 0.3rem;
+      font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+      font-size: 1.15rem;
+      letter-spacing: 0.05em;
+      color: rgba(255, 189, 112, 0.94);
+    }
+
+    .section-head {
+      max-width: 44rem;
+      margin-bottom: 2rem;
+    }
+
+    .section-kicker {
+      margin: 0 0 0.7rem;
+      font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: rgba(255, 189, 112, 0.88);
+    }
+
+    .section-title {
+      margin: 0;
+      font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+      font-size: clamp(2.6rem, 6vw, 5rem);
+      line-height: 0.92;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #f0dfbd;
+    }
+
+    .section-copy {
+      max-width: 36rem;
+      margin: 0.95rem 0 0;
+      font-size: 1.02rem;
+      line-height: 1.46;
+      color: var(--muted);
+    }
+
+    .chapter {
+      padding-top: 2rem;
+    }
+
+    .chapter-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: clamp(1rem, 2.2vw, 1.5rem);
+      align-items: start;
+      justify-items: center;
+      max-width: none;
+    }
+
+    .chapter-intro {
+      position: relative;
+      top: 0;
+      width: min(100%, 72rem);
+      padding: 1.4rem 1.25rem;
+      background: linear-gradient(160deg, rgba(15, 42, 46, 0.36), rgba(7, 11, 16, 0.82));
+      border: 1px solid rgba(148, 229, 236, 0.16);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      text-align: center;
+    }
+
+    .chapter-intro p {
+      margin: 0;
+      font-size: 0.98rem;
+      line-height: 1.48;
+      color: rgba(241, 231, 210, 0.76);
+    }
+
+    .chapter-shell {
+      position: relative;
+      width: min(100%, 72rem);
+      padding: clamp(1.2rem, 2vw, 1.7rem);
+      background:
+        linear-gradient(180deg, rgba(255, 122, 47, 0.08), rgba(255, 122, 47, 0) 18%),
+        linear-gradient(160deg, rgba(7, 11, 16, 0.92), rgba(9, 16, 22, 0.82));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 26px 80px rgba(0, 0, 0, 0.46), inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+    }
+
+    .chapter-shell::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(255, 122, 47, 0.11), transparent 18%),
+        radial-gradient(circle at 88% 12%, rgba(255, 122, 47, 0.12), transparent 24%);
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    .chapter-text {
+      position: relative;
+      width: 100%;
+      margin: 0 auto;
+      padding: clamp(1.1rem, 2.8vw, 2rem);
+      background: rgba(5, 8, 12, 0.46);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      animation: text-breathe 7.5s ease-in-out infinite;
+    }
+
+    .prose h2,
+    .prose h3,
+    .prose h4 {
+      margin: 0 0 1.4rem;
+      font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+      line-height: 0.96;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #f0dfbd;
+    }
+
+    .prose h2 {
+      font-size: clamp(2rem, 4.8vw, 3.4rem);
+    }
+
+    .prose p,
+    .prose li,
+    .prose blockquote {
+      font-size: clamp(1rem, 0.5vw + 0.92rem, 1.12rem);
+      line-height: 1.5;
+      color: rgba(241, 231, 210, 0.9);
+    }
+
+    .prose p {
+      margin: 0 0 1.05rem;
+      text-wrap: pretty;
+    }
+
+    .prose p:last-child {
+      margin-bottom: 0;
+    }
+
+    .prose strong {
+      color: rgba(255, 189, 112, 0.95);
+      font-weight: 700;
+    }
+
+    .prose em {
+      color: rgba(255, 214, 160, 0.96);
+      font-style: italic;
+    }
+
+    .prose code {
+      padding: 0.08rem 0.3rem;
+      border-radius: 0.2rem;
+      background: rgba(255, 255, 255, 0.08);
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.92em;
+    }
+
+    .prose blockquote {
+      margin: 1.2rem 0;
+      padding: 0.25rem 0 0.25rem 1rem;
+      border-left: 2px solid rgba(255, 122, 47, 0.45);
+      color: rgba(241, 231, 210, 0.84);
+    }
+
+    .prose ul {
+      margin: 1rem 0 1.2rem;
+      padding-left: 1.2rem;
+    }
+
+    .prose li + li {
+      margin-top: 0.45rem;
+    }
+
+    .download {
+      padding-top: 2.6rem;
+    }
+
+    .download-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 1.5rem;
+      align-items: center;
+      padding: clamp(1.5rem, 4vw, 2.6rem);
+      background:
+        radial-gradient(circle at 78% 52%, rgba(255, 122, 47, 0.24), transparent 24%),
+        linear-gradient(135deg, rgba(15, 42, 46, 0.76), rgba(8, 13, 18, 0.98));
+      border: 1px solid rgba(255, 122, 47, 0.22);
+      box-shadow: 0 30px 100px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .download-card::before {
+      content: "";
+      position: absolute;
+      inset: auto -4% -18% 54%;
+      height: 58%;
+      background: radial-gradient(circle, rgba(255, 214, 135, 0.72) 0 8%, rgba(255, 122, 47, 0.58) 18%, rgba(255, 90, 31, 0) 68%);
+      filter: blur(14px);
+      transform: rotate(-6deg);
+      z-index: -1;
+      animation: pulse-flare 5.5s ease-in-out infinite;
+    }
+
+    .download-copy {
+      max-width: 40rem;
+    }
+
+    .download-copy p {
+      margin: 0.9rem 0 0;
+      font-size: 1.04rem;
+      line-height: 1.48;
+      color: rgba(241, 231, 210, 0.78);
+    }
+
+    .download-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.9rem;
+      justify-content: flex-end;
+    }
+
+    .link-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.9rem;
+      margin-top: 1.4rem;
+    }
+
+    .text-link {
+      min-height: 3rem;
+      padding-inline: 1rem;
+      background: rgba(7, 11, 16, 0.46);
+      border-color: rgba(148, 229, 236, 0.18);
+      color: rgba(241, 231, 210, 0.82);
+    }
+
+    footer {
+      padding: 1.2rem clamp(1.2rem, 3vw, 3rem) 2.4rem;
+    }
+
+    .footer-inner {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.2rem;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      color: rgba(241, 231, 210, 0.52);
+      font-size: 0.88rem;
+      letter-spacing: 0.05em;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translate3d(0, 2.2rem, 0) scale(0.985);
+      filter: blur(12px);
+      transition: opacity 820ms cubic-bezier(0.16, 1, 0.3, 1), transform 820ms cubic-bezier(0.16, 1, 0.3, 1), filter 820ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translate3d(0, 0, 0) scale(1);
+      filter: blur(0);
+    }
+
+    [data-depth] {
+      transform: translate3d(0, 0, 0);
+      transition: transform 160ms linear;
+      will-change: transform;
+    }
+
+    @keyframes title-shudder {
+      0%, 88%, 100% { transform: translate3d(0, 0, 0); }
+      89% { transform: translate3d(-0.016em, 0.01em, 0); }
+      90% { transform: translate3d(0.022em, -0.01em, 0); }
+      91% { transform: translate3d(-0.012em, 0.008em, 0); }
+      92% { transform: translate3d(0.01em, 0, 0); }
+    }
+
+    @keyframes title-glitch-a {
+      0%, 92%, 100% { transform: translate3d(0.04em, 0, 0); opacity: 0.24; }
+      93% { transform: translate3d(-0.02em, 0.02em, 0); opacity: 0.5; }
+      94% { transform: translate3d(0.06em, -0.02em, 0); opacity: 0.66; }
+      95% { transform: translate3d(0.02em, 0, 0); opacity: 0.38; }
+    }
+
+    @keyframes title-glitch-b {
+      0%, 83%, 100% { transform: translate3d(-0.03em, 0, 0); opacity: 0.18; }
+      84% { transform: translate3d(0.03em, 0.02em, 0); opacity: 0.52; }
+      85% { transform: translate3d(-0.05em, -0.03em, 0); opacity: 0.62; }
+      86% { transform: translate3d(-0.02em, 0, 0); opacity: 0.26; }
+    }
+
+    @keyframes hover-glitch {
+      0% { transform: translate3d(-3px, 0, 0); }
+      33% { transform: translate3d(3px, -1px, 0); }
+      66% { transform: translate3d(-1px, 1px, 0); }
+      100% { transform: translate3d(0, 0, 0); }
+    }
+
+    @keyframes cover-heave {
+      0%, 100% { transform: rotate(-6deg) translate3d(0, 0, 0); }
+      40% { transform: rotate(-4.8deg) translate3d(0, -10px, 0); }
+      60% { transform: rotate(-6.8deg) translate3d(0, -6px, 0); }
+    }
+
+    @keyframes pulse-flare {
+      0%, 100% { transform: scale(1) rotate(-7deg); opacity: 0.84; }
+      48% { transform: scale(1.08) rotate(-5deg); opacity: 1; }
+    }
+
+    @keyframes burst-breathe {
+      0%, 100% { transform: rotate(-12deg) scale(0.98); opacity: 0.84; }
+      50% { transform: rotate(-8deg) scale(1.08); opacity: 1; }
+    }
+
+    @keyframes orbit-twitch {
+      0%, 100% { transform: rotate(12deg) scale(1); }
+      26% { transform: rotate(13deg) scale(1.01); }
+      27% { transform: rotate(11.5deg) scale(1.008); }
+      68% { transform: rotate(14deg) scale(1.02); }
+      69% { transform: rotate(12deg) scale(1); }
+    }
+
+    @keyframes text-breathe {
+      0%, 100% { transform: translate3d(0, 0, 0); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02); }
+      50% { transform: translate3d(0, -4px, 0); box-shadow: inset 0 0 0 1px rgba(255, 122, 47, 0.06), 0 18px 36px rgba(0, 0, 0, 0.16); }
+    }
+
+    @keyframes noise-shift {
+      0% { transform: translate3d(0, 0, 0); }
+      20% { transform: translate3d(-1.5%, 1%, 0); }
+      40% { transform: translate3d(1%, -1%, 0); }
+      60% { transform: translate3d(-0.8%, 0.5%, 0); }
+      80% { transform: translate3d(1.2%, 1.2%, 0); }
+      100% { transform: translate3d(0, 0, 0); }
+    }
+
+    @keyframes burst-flare {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.12) rotate(calc(var(--burst-tilt) * 1deg)); }
+      12% { opacity: 0.95; }
+      56% { opacity: 0.72; }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(1.6) rotate(calc(var(--burst-tilt) * 1deg)); }
+    }
+
+    @media (max-width: 980px) {
+      .hero,
+      .chapter-layout,
+      .download-card {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        padding-top: 5.5rem;
+      }
+
+      .hero-stage {
+        min-height: auto;
+      }
+
+      .cover-rig {
+        width: min(76vw, 28rem);
+      }
+
+      .cover-signal {
+        left: auto;
+        right: -4%;
+        bottom: 4%;
+      }
+
+      .download-actions {
+        justify-content: flex-start;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .title {
+        font-size: clamp(4rem, 22vw, 6.4rem);
+      }
+
+      .cta-row,
+      .download-actions,
+      .link-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .button,
+      .text-link {
+        width: 100%;
+      }
+
+      .cover-rig {
+        width: min(88vw, 24rem);
+      }
+
+      .cover-signal {
+        position: relative;
+        left: auto;
+        right: auto;
+        bottom: auto;
+        width: auto;
+        margin: 1rem 0 0;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+
+      .reveal {
+        opacity: 1;
+        transform: none;
+        filter: none;
+      }
+    }
+  </style>
+</head>
+<body id="top">
+  <canvas id="starfield" aria-hidden="true"></canvas>
+  <div class="haze" aria-hidden="true"></div>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="impact-layer" aria-hidden="true"></div>
+
+  <main>
+    <section class="section hero">
+      <div class="hero-copy reveal" data-depth="0.03">
+        <div class="eyebrow">Launch Signal</div>
+        <div class="title-lockup">
+          <h1 class="title" data-text="BEDLAM">BEDLAM</h1>
+        </div>
+        <p class="author-line">Joshua Szepietowski</p>
+        <p class="lede">Orbital objects arrive early. A military warning network learns the wrong lesson. Control narrows at machine speed.</p>
+        <div class="signal-line">
+          <span class="signal-label">Escalation Profile</span>
+          <span class="signal-copy">Hard science fiction about automated systems outrunning human understanding, where the only way to slow the spiral is to break the machine on purpose.</span>
+        </div>
+        <div class="metrics">
+          <div class="metric">
+            <span class="metric-label">Failure Mode</span>
+            <span class="metric-value">Early Arrival</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Adversary</span>
+            <span class="metric-value">Automation</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Outcome</span>
+            <span class="metric-value">Costly Survival</span>
+          </div>
+        </div>
+        <div class="cta-row">
+          <a class="button button-primary" data-glitch="READ THE FIRST CHAPTER" href="#chapter-one">Read the First Chapter</a>
+          <a class="button button-secondary" data-glitch="DOWNLOAD THE BOOK" href="Bedlam.pdf" download>Download the Book</a>
+        </div>
+      </div>
+
+      <div class="hero-stage reveal" data-depth="0.07">
+        <div class="cover-rig" data-depth="0.12">
+          <div class="cover-frame">
+            <img class="cover-art" src="cover.png" alt="Bedlam cover art">
+          </div>
+          <div class="cover-orbit"></div>
+          <div class="cover-impact"></div>
+          <div class="cover-signal">
+            <div class="signal-grid">
+              <strong>03:47:12.6 UTC</strong>
+              <span>Warning fired 2.3 seconds early.</span>
+              <span>Objects where they should be. Time was wrong.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section chapter" id="chapter-one">
+      <div class="chapter-layout">
+        <aside class="chapter-intro reveal" data-depth="0.04">
+          <p>When orbital objects begin arriving seconds early, verification analyst Nira Chandrasekaran does the reasonable thing and reports the anomaly. The early-warning network learns from her data immediately, tightening thresholds, compressing timelines, and teaching every downstream system to trust a broken frame of time. What starts as a small impossible observation spreads across global tracking networks, triggers autonomous maneuvers, burns irreplaceable fuel, and pushes nuclear powers toward panic. As doctrine hardens and human judgment is routed aside, Nira is forced to confront the truth at the center of Bedlam: the system is not failing. It is defending itself exactly as designed, and stopping it may require sabotage before automation turns uncertainty into catastrophe.</p>
+        </aside>
+
+        <div class="chapter-shell reveal" data-depth="0.03">
+          <article class="chapter-text prose">
+<h2>1: The Early Arrival</h2>
+<p>The warning fired early, and that was worse than if it had fired late.</p>
+<p>Nira stared at the console. The intercept alert had triggered at 03:47:12.6 UTC, flagging a conjunction between a defunct weather satellite and a piece of tracked debris. Standard. Routine. Except the predicted closest approach wasn't supposed to happen until 03:47:14.9.</p>
+<p>Two point three seconds early.</p>
+<p>She pulled the raw telemetry. The tracking stations at Fylingdales and Clear had both acquired the objects on schedule. Doppler returns were clean. Range gates nominal. The debris fragment—catalogued as 1997-043F, a booster shroud from a Delta II upper stage—was exactly where the propagator said it would be.</p>
+<p>It had just arrived there too soon.</p>
+<p>Nira ran the verification sequence. Timestamp integrity: valid. Station clock sync: within tolerance. Atmospheric correction: applied. She checked the conjunction geometry against the last twelve hours of tracking data. The orbital elements hadn't changed. The drag coefficient was stable. Solar flux was within predicted bounds.</p>
+<p>The math closed. That was the problem.</p>
+<p>If the warning had fired late, she would have flagged a timing fault and escalated to systems. Late warnings meant degraded sensors, processing delays, network latency—problems with known shapes and known fixes. Late was survivable. Late was a known failure mode.</p>
+<p>Early meant the object arrived at its predicted position ahead of schedule. Early meant the orbit itself had accelerated, or the clocks had slowed, or something in the propagation chain was fundamentally broken in a way the verification suite couldn't detect.</p>
+<p>Early was impossible.</p>
+<p>She expanded the tracking window and pulled the secondary returns. The defunct weather satellite—NOAA-12, dead since 2007 but still tumbling through its sun-synchronous graveyard—showed the same signature. Position nominal. Arrival early. The two objects had reached their closest approach 2.3 seconds before the ephemeris predicted.</p>
+<p>Both of them. Simultaneously.</p>
+<p>Nira's throat tightened. Correlated error across two independent targets meant the problem wasn't in the objects. It was in the reference frame. In the timing. In the foundational assumption that synchronized clocks meant synchronized predictions.</p>
+<p>She checked the ground station synchronization logs. GPS disciplined oscillators at both sites. Timing derived from the same constellation, the same atomic standards, the same definition of UTC. The stations agreed with each other. They agreed with the Network Time Protocol hierarchy. They agreed with everything except the sky.</p>
+<p>The objects were where they should be. They had just gotten there too fast.</p>
+<p>Nira pulled up the historical archive and ran a batch query against the last seventy-two hours of conjunction warnings. The system had flagged eleven events in that window. She sorted by timing residual.</p>
+<p>Seven showed no anomaly. Two showed marginal early arrival—less than half a second, within the noise floor. Two more showed early arrival exceeding one second.</p>
+<p>All the anomalous cases involved objects at higher altitudes. Longer orbital periods. Greater baseline separation from the tracking stations.</p>
+<p>She was looking at a pattern.</p>
+<p>The operations floor was quiet. Third shift. Four other analysts at their stations, none of them looking her way. The soft hum of climate control and the intermittent chirp of routine telemetry. Everything normal. Everything calm.</p>
+<p>She could suppress this.</p>
+<p>The thought surfaced before she could stop it. Two point three seconds was small. The conjunction had been a near miss anyway—probability of collision less than one in ten thousand. No maneuver required. No escalation triggered. She could log it as a timing artifact, flag it for engineering review in the morning, and let someone else decide if it mattered.</p>
+<p>That was the safe path. The cautious path. The path that didn't put her name on an anomaly report that would propagate to every node in the early-warning network.</p>
+<p>But she had five anomalies now. A pattern that scaled with altitude. With baseline. With the geometry of observation.</p>
+<p>If she suppressed it, she owned it. Every future event traced back to the moment she chose not to flag.</p>
+<p>If she flagged it, the system owned it. The data would ingest automatically. The propagator would reweight. The confidence intervals would adjust. Every downstream prediction would shift by some fraction she couldn't calculate without understanding the root cause.</p>
+<p>And she didn't understand the root cause.</p>
+<p>Nira pulled up the anomaly submission interface. The cursor blinked in the description field. She had flagged dozens of events in her six years on this floor. Sensor faults. Processing errors. Catalog mismatches. Human mistakes with human fixes.</p>
+<p>This wasn't that.</p>
+<p>She began typing.</p>
+<p><em>Timing residual observed across multiple tracked objects. Early arrival at predicted positions consistent with baseline-dependent systematic. Correlation across independent targets suggests reference frame issue rather than object-specific error. Requesting cross-domain validation.</em></p>
+<p>Her finger hovered over the submit button.</p>
+<p>The system was designed to learn. Every analyst input fed the training loop. Every flag adjusted the weights. The network didn't just receive data—it incorporated it. Adapted to it. Trusted it.</p>
+<p>Once she submitted, the anomaly would become part of the system's model of the world. The propagator would begin accounting for early arrival. Confidence thresholds would shift. Response timelines would compress.</p>
+<p>The system would believe her.</p>
+<p>And if she was wrong—if this was noise, coincidence, some artifact of atmospheric refraction or relativistic correction she'd failed to account for—the system would believe that too. It would adjust its predictions based on a phantom. It would optimize for a failure mode that didn't exist.</p>
+<p>But if she was right, and she didn't flag it, the system would continue trusting a broken frame. It would generate predictions that arrived late to reality. It would miss conjunctions. Miss intercepts. Miss threats.</p>
+<p>False negatives were unacceptable. Doctrine said so. The system said so. Six years of training said so.</p>
+<p>False positives were survivable.</p>
+<p>She clicked submit.</p>
+<p>The interface acknowledged receipt. The timestamp logged. The data packet encrypted and queued for distribution. Somewhere in the network, automated processes were already parsing her report, extracting structured fields, updating probability distributions.</p>
+<p>The system was learning.</p>
+<p>Nira sat back in her chair. The operations floor remained quiet. No alarms. No alerts. Just the soft hum and the intermittent chirp and the four other analysts who had no idea that the frame they trusted had just been marked as suspect.</p>
+<p>She pulled up the propagator's real-time output. The next conjunction warning was scheduled for 04:12:33.1. A derelict communications satellite and a debris fragment from the 2009 collision. Standard geometry. Standard risk profile.</p>
+<p>She watched the prediction timer count down.</p>
+<p>At 04:12:30.6, the warning triggered.</p>
+<p>Two and a half seconds early.</p>
+<p>The system had already adjusted.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section download">
+      <div class="download-card reveal" data-depth="0.03">
+        <div class="download-copy">
+          <p class="section-kicker">Immediate Access</p>
+          <h2 class="section-title">Pull The Full File</h2>
+          <p>The launch page is only the breach. Download the complete book and read the system fail in full.</p>
+          <div class="link-row">
+            <a class="text-link" data-glitch="SOURCE REPOSITORY" href="https://github.com/joshSzep/bedlam" target="_blank" rel="noreferrer">Source Repository</a>
+            <a class="text-link" data-glitch="AUTHOR SITE" href="https://joshszep.com" target="_blank" rel="noreferrer">Author Site</a>
+          </div>
+        </div>
+        <div class="download-actions">
+          <a class="button button-secondary" data-glitch="BACK TO THE TOP" href="#top">Back to the Top</a>
+          <a class="button button-primary" data-glitch="DOWNLOAD THE BOOK" href="Bedlam.pdf" download>Download the Book</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <span>Bedlam by Joshua Szepietowski</span>
+      <span>Static launch page generated locally</span>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const canvas = document.getElementById('starfield');
+      const ctx = canvas.getContext('2d');
+      const impactLayer = document.querySelector('.impact-layer');
+      const revealItems = Array.from(document.querySelectorAll('.reveal'));
+      const depthItems = Array.from(document.querySelectorAll('[data-depth]'));
+      const title = document.querySelector('.title');
+      let width = 0;
+      let height = 0;
+      let dpr = Math.min(window.devicePixelRatio || 1, 2);
+      let animationFrame = 0;
+      let stars = [];
+      let embers = [];
+      const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
+      const scrollState = { y: window.scrollY || 0, ty: window.scrollY || 0 };
+
+      function sizeCanvas() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = Math.max(1, Math.floor(width * dpr));
+        canvas.height = Math.max(1, Math.floor(height * dpr));
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        buildField();
+      }
+
+      function randomBetween(min, max) {
+        return min + Math.random() * (max - min);
+      }
+
+      function buildField() {
+        const starCount = Math.max(120, Math.floor((width * height) / 9000));
+        const emberCount = Math.max(10, Math.floor(width / 120));
+
+        stars = Array.from({ length: starCount }, function () {
+          return {
+            x: Math.random() * width,
+            y: Math.random() * height,
+            size: randomBetween(0.5, 1.9),
+            speed: randomBetween(0.03, 0.32),
+            drift: randomBetween(-0.03, 0.03),
+            alpha: randomBetween(0.35, 0.9),
+            depth: randomBetween(0.1, 1.2)
+          };
+        });
+
+        embers = Array.from({ length: emberCount }, function () {
+          return {
+            x: Math.random() * width,
+            y: Math.random() * height,
+            size: randomBetween(0.8, 2.2),
+            speed: randomBetween(0.1, 0.4),
+            drift: randomBetween(-0.15, 0.15),
+            alpha: randomBetween(0.15, 0.45),
+            depth: randomBetween(0.4, 1.3)
+          };
+        });
+      }
+
+      function drawField() {
+        ctx.clearRect(0, 0, width, height);
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.fillStyle = 'rgba(0, 0, 0, 0)';
+        ctx.fillRect(0, 0, width, height);
+
+        pointer.x += (pointer.tx - pointer.x) * 0.06;
+        pointer.y += (pointer.ty - pointer.y) * 0.06;
+        scrollState.y += (scrollState.ty - scrollState.y) * 0.08;
+
+        ctx.save();
+
+        stars.forEach(function (star) {
+          star.y += star.speed;
+          star.x += star.drift;
+
+          if (star.y > height + 24) {
+            star.y = -16;
+            star.x = Math.random() * width;
+          }
+
+          if (star.x > width + 16) {
+            star.x = -16;
+          } else if (star.x < -16) {
+            star.x = width + 16;
+          }
+
+          const px = star.x + pointer.x * star.depth * 16;
+          const py = ((star.y + scrollState.y * star.depth * 0.04) % (height + 32)) - 16;
+          ctx.beginPath();
+          ctx.fillStyle = 'rgba(235, 241, 255, ' + star.alpha + ')';
+          ctx.arc(px, py, star.size, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        ctx.globalCompositeOperation = 'screen';
+
+        embers.forEach(function (ember) {
+          ember.y -= ember.speed;
+          ember.x += ember.drift;
+
+          if (ember.y < -24) {
+            ember.y = height + 18;
+            ember.x = randomBetween(width * 0.15, width * 0.85);
+          }
+
+          const px = ember.x + pointer.x * ember.depth * 10;
+          const py = ember.y - scrollState.y * ember.depth * 0.025;
+          const radius = ember.size + Math.sin((Date.now() / 400) + ember.x) * 0.2;
+          ctx.beginPath();
+          ctx.fillStyle = 'rgba(255, 122, 47, ' + ember.alpha + ')';
+          ctx.arc(px, py, radius, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        ctx.restore();
+      }
+
+      function applyParallax() {
+        const px = pointer.x;
+        const py = pointer.y;
+        const sy = scrollState.y;
+
+        depthItems.forEach(function (item) {
+          const depth = parseFloat(item.getAttribute('data-depth') || '0');
+          const shiftX = px * depth * 26;
+          const shiftY = py * depth * 18 - sy * depth * 0.05;
+          item.style.transform = 'translate3d(' + shiftX.toFixed(2) + 'px, ' + shiftY.toFixed(2) + 'px, 0)';
+        });
+
+        if (title && !prefersReducedMotion) {
+          const jitterX = px * 5;
+          const jitterY = py * 2;
+          title.style.transform = 'translate3d(' + jitterX.toFixed(2) + 'px, ' + jitterY.toFixed(2) + 'px, 0)';
+        }
+      }
+
+      function tick() {
+        if (!prefersReducedMotion) {
+          drawField();
+          applyParallax();
+        }
+        animationFrame = window.requestAnimationFrame(tick);
+      }
+
+      function spawnBurst(anchor) {
+        if (prefersReducedMotion) {
+          return;
+        }
+
+        const burst = document.createElement('span');
+        burst.className = 'impact-burst';
+        const bounds = anchor ? anchor.getBoundingClientRect() : null;
+        const left = bounds ? ((bounds.left + bounds.width * randomBetween(0.2, 0.8)) / width) * 100 : randomBetween(18, 82);
+        const top = bounds ? ((bounds.top + bounds.height * randomBetween(0.3, 0.75)) / height) * 100 : randomBetween(18, 82);
+        burst.style.setProperty('--burst-left', left.toFixed(2));
+        burst.style.setProperty('--burst-top', top.toFixed(2));
+        burst.style.setProperty('--burst-size', randomBetween(180, 360).toFixed(0) + 'px');
+        burst.style.setProperty('--burst-tilt', randomBetween(-28, 32).toFixed(1));
+        burst.style.setProperty('--burst-duration', randomBetween(1.3, 2.2).toFixed(2) + 's');
+        impactLayer.appendChild(burst);
+        window.setTimeout(function () {
+          burst.remove();
+        }, 2400);
+      }
+
+      function cycleBursts() {
+        const heroStage = document.querySelector('.hero-stage');
+        spawnBurst(heroStage);
+        const delay = randomBetween(1400, 2600);
+        window.setTimeout(cycleBursts, delay);
+      }
+
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, {
+          threshold: 0.15,
+          rootMargin: '0px 0px -8% 0px'
+        });
+
+        revealItems.forEach(function (item, index) {
+          item.style.transitionDelay = (index * 70) + 'ms';
+          observer.observe(item);
+        });
+      } else {
+        revealItems.forEach(function (item) {
+          item.classList.add('is-visible');
+        });
+      }
+
+      document.addEventListener('mousemove', function (event) {
+        pointer.tx = ((event.clientX / width) - 0.5) * 2;
+        pointer.ty = ((event.clientY / height) - 0.5) * 2;
+      }, { passive: true });
+
+      document.addEventListener('touchmove', function (event) {
+        if (!event.touches || !event.touches[0]) {
+          return;
+        }
+        const touch = event.touches[0];
+        pointer.tx = ((touch.clientX / width) - 0.5) * 2;
+        pointer.ty = ((touch.clientY / height) - 0.5) * 2;
+      }, { passive: true });
+
+      window.addEventListener('scroll', function () {
+        scrollState.ty = window.scrollY || 0;
+      }, { passive: true });
+
+      window.addEventListener('resize', sizeCanvas);
+
+      document.querySelectorAll('.button, .text-link').forEach(function (item) {
+        item.addEventListener('mouseenter', function () {
+          spawnBurst(item);
+        });
+        item.addEventListener('focus', function () {
+          spawnBurst(item);
+        });
+      });
+
+      sizeCanvas();
+
+      if (!prefersReducedMotion) {
+        tick();
+        window.setTimeout(function () {
+          cycleBursts();
+        }, 600);
+      } else {
+        revealItems.forEach(function (item) {
+          item.classList.add('is-visible');
+        });
+      }
+
+      window.addEventListener('beforeunload', function () {
+        window.cancelAnimationFrame(animationFrame);
+      });
+    }());
+  </script>
+</body>
+</html>
