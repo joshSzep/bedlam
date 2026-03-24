@@ -1183,11 +1183,11 @@ cat <<'HTML'
 
     <section class="section chapter" id="chapter-one">
       <div class="chapter-layout">
-        <aside class="chapter-intro reveal" data-depth="0.04">
+        <aside class="chapter-intro" data-depth="0.04">
           <p>When orbital objects begin arriving seconds early, verification analyst Nira Chandrasekaran does the reasonable thing and reports the anomaly. The early-warning network learns from her data immediately, tightening thresholds, compressing timelines, and teaching every downstream system to trust a broken frame of time. What starts as a small impossible observation spreads across global tracking networks, triggers autonomous maneuvers, burns irreplaceable fuel, and pushes nuclear powers toward panic. As doctrine hardens and human judgment is routed aside, Nira is forced to confront the truth at the center of Bedlam: the system is not failing. It is defending itself exactly as designed, and stopping it may require sabotage before automation turns uncertainty into catastrophe.</p>
         </aside>
 
-        <div class="chapter-shell reveal" data-depth="0.03">
+        <div class="chapter-shell" data-depth="0.03">
           <article class="chapter-text prose">
 HTML
 cat "$CHAPTER_HTML"
