@@ -21,7 +21,7 @@ BEFORE_BODY_TEX="${TMP_DIR}/before-body.tex"
 tail -n +5 "$MANUSCRIPT_MD" > "$BODY_MD"
 
 cat > "$HEADER_TEX" <<'EOF'
-\usepackage[margin=1in,headheight=16pt,headsep=24pt,footskip=30pt]{geometry}
+\usepackage[top=0.9in,bottom=1.15in,left=0.95in,right=0.95in,headheight=16pt,headsep=20pt,footskip=32pt]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{mathpazo}
@@ -30,13 +30,22 @@ cat > "$HEADER_TEX" <<'EOF'
 \usepackage{xcolor}
 \usepackage{fancyhdr}
 \usepackage{parskip}
+\usepackage{afterpage}
 
 \setlength{\parindent}{1.2em}
 \setlength{\parskip}{0.35em}
 \linespread{1.05}
+\raggedbottom
 
 \definecolor{bedlamink}{HTML}{1D2430}
 \definecolor{bedlamrule}{HTML}{C8CDD6}
+
+\makeatletter
+\renewcommand\section{\@startsection{section}{1}{\z@}%
+  {0pt}%
+  {0.6\baselineskip}%
+  {\normalfont\Large\bfseries\color{bedlamink}}}
+\makeatother
 
 \renewcommand{\familydefault}{\rmdefault}
 \pagestyle{fancy}
@@ -65,7 +74,9 @@ cat > "$BEFORE_BODY_TEX" <<'EOF'
 \end{titlepage}
 
 \setcounter{page}{1}
+\newgeometry{top=0.72in,bottom=0.82in,left=0.95in,right=0.95in,headheight=16pt,headsep=18pt,footskip=28pt}
 \pagestyle{fancy}
+\afterpage{\restoregeometry}
 EOF
 
 pandoc "$BODY_MD" \
