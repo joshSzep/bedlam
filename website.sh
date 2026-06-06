@@ -6,6 +6,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 OUTPUT_DIR="$SCRIPT_DIR/website"
 COVER_SRC="$SCRIPT_DIR/cover.png"
 PDF_SRC="$SCRIPT_DIR/Bedlam.pdf"
+EPUB_SRC="$SCRIPT_DIR/Bedlam.epub"
 CHAPTER_SRC="$SCRIPT_DIR/manuscript/01.md"
 
 require_file() {
@@ -128,6 +129,7 @@ PERL
 
 require_file "$COVER_SRC"
 require_file "$PDF_SRC"
+require_file "$EPUB_SRC"
 require_file "$CHAPTER_SRC"
 
 TMP_DIR="$(mktemp -d "${TMPDIR:-/tmp}/bedlam.website.XXXXXX")"
@@ -141,6 +143,7 @@ mkdir -p "$OUTPUT_DIR"
 
 cp "$COVER_SRC" "$OUTPUT_DIR/cover.png"
 cp "$PDF_SRC" "$OUTPUT_DIR/Bedlam.pdf"
+cp "$EPUB_SRC" "$OUTPUT_DIR/Bedlam.epub"
 
 {
 cat <<'HTML'
@@ -1159,7 +1162,8 @@ cat <<'HTML'
         </div>
         <div class="cta-row">
           <a class="button button-primary" data-glitch="READ THE FIRST CHAPTER" href="#chapter-one">Read the First Chapter</a>
-          <a class="button button-secondary" data-glitch="DOWNLOAD THE BOOK" href="Bedlam.pdf" download>Download the Book</a>
+          <a class="button button-secondary" data-glitch="DOWNLOAD PDF" href="Bedlam.pdf" download>Download PDF</a>
+          <a class="button button-secondary" data-glitch="DOWNLOAD EPUB" href="Bedlam.epub" download>Download EPUB</a>
         </div>
       </div>
 
@@ -1210,7 +1214,8 @@ cat <<'HTML'
         </div>
         <div class="download-actions">
           <a class="button button-secondary" data-glitch="BACK TO THE TOP" href="#top">Back to the Top</a>
-          <a class="button button-primary" data-glitch="DOWNLOAD THE BOOK" href="Bedlam.pdf" download>Download the Book</a>
+          <a class="button button-primary" data-glitch="DOWNLOAD PDF" href="Bedlam.pdf" download>Download PDF</a>
+          <a class="button button-secondary" data-glitch="DOWNLOAD EPUB" href="Bedlam.epub" download>Download EPUB</a>
         </div>
       </div>
     </section>
