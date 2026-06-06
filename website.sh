@@ -154,6 +154,8 @@ cat <<'HTML'
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Bedlam by Joshua Szepietowski</title>
   <meta name="description" content="A launch page for Bedlam, a hard science fiction novel about automated systems outrunning human understanding.">
+  <link rel="icon" type="image/png" href="cover.png">
+  <link rel="apple-touch-icon" href="cover.png">
   <style>
     :root {
       --space: #0b0f14;
